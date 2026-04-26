@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="login-shell">
+    <div class="login-card">
+        <h1>Login</h1>
+
+        <form id="loginForm" class="login-form">
+            <label for="username">Username</label>
+            <input type="text" id="username" required>
+
+            <label for="password">Password</label>
+            <div class="password-field-wrap">
+                <input type="password" id="password" required>
+                <button type="button" id="togglePassword" class="password-inside-btn" aria-label="Show password">
+                    👁
+                </button>
+            </div>
+
+            <button type="submit" class="primary-btn">Sign in</button>
+
+            <p id="loginError" class="error-text"></p>
+        </form>
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="app-shell">
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="brand">Nexa Event Pro</div>
+
+            <nav class="nav-left">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/guests" id="guestsNavLink" class="hidden-link">Guests</a>
+                <a href="/checkin" id="checkinNavLink" class="hidden-link">Check-in</a>
+                <a href="/users" id="usersNavLink" class="hidden-link">Users</a>
+                <a href="/admin" id="adminNavLink" class="hidden-link">Admin</a>
+            </nav>
+        </div>
+
+        <div class="nav-right">
+            <span class="user-chip" id="userChip">Loading...</span>
+            <a href="#" id="logoutBtn">Logout</a>
+        </div>
+    </header>
+
+    <main class="page-wrap page-wrap-wide" id="dashboardPageWrap">
+        <section class="panel">
+            <div class="panel-head">
+                <h2>Quick Search</h2>
+                <p>Find guests by name, phone, email, invitation code or status.</p>
+            </div>
+
+            <input
+                class="search-input"
+                type="text"
+                id="dashboardSearchInput"
+                placeholder="Type to search guests..."
+            >
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Code</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboardSearchBody">
+                        <tr>
+                            <td colspan="4" class="muted-cell">Start typing to search guests...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="stats-grid" id="dashboardStatsGrid">
+            <div class="stat-card">
+                <div class="dot blue"></div>
+                <h3>Total Guests</h3>
+                <div class="stat-number blue-text" id="totalGuests">0</div>
+                <a href="/guests" class="stat-link" id="totalGuestsLink">View guests →</a>
+            </div>
+
+            <div class="stat-card">
+                <div class="dot green"></div>
+                <h3>Checked-in</h3>
+                <div class="stat-number green-text" id="checkedIn">0</div>
+                <a href="/checkin" class="stat-link" id="checkedInLink">Go to check-in →</a>
+            </div>
+
+            <div class="stat-card" id="totalUsersCard">
+                <div class="dot purple"></div>
+                <h3>Total Users</h3>
+                <div class="stat-number purple-text" id="totalUsers">0</div>
+                <a href="/users" class="stat-link" id="totalUsersLink">Manage users →</a>
+            </div>
+        </section>
+
+        <section class="dashboard-lock-row" id="dashboardLockRow">
+            <div class="panel dashboard-lock-panel" id="manualLockPanel">
+                <div class="split-head">
+                    <div>
+                        <h3>Check-in Lock (Manual)</h3>
+                        <p>Stop or resume check-in manually.</p>
+                    </div>
+                    <span class="badge danger" id="checkinLockBadge">OPEN</span>
+                </div>
+
+                <label for="manualLockUntil">Lock until (Local time)</label>
+                <input type="datetime-local" class="text-input" id="manualLockUntil">
+
+                <div class="button-row">
+                    <button class="danger-btn" type="button" id="manualLockBtn">Lock</button>
+                    <button class="success-btn" type="button" id="manualUnlockBtn">Unlock</button>
+                </div>
+            </div>
+
+            <div class="panel dashboard-lock-panel" id="autoLockPanel">
+                <h3>Auto Lock Rule (Event ends)</h3>
+                <p>Check-in closes automatically when event end time is reached.</p>
+
+                <p class="inline-note">
+                    Event ends at:
+                    <span class="inline-chip" id="eventEndTimeDisplay">Not set</span>
+                    EAT (UTC+03:00)
+                </p>
+
+                <label for="eventEndTimeInput">Set event end time (Local time)</label>
+                <input type="datetime-local" class="text-input" id="eventEndTimeInput">
+
+                <div class="button-row">
+                    <button class="secondary-btn" type="button" id="saveEventEndTimeBtn">Save</button>
+                    <button class="outline-btn" type="button" id="clearEventEndTimeBtn">Clear</button>
+                </div>
+            </div>
+
+            <div class="panel dashboard-reports-panel" id="reportsCard">
+                <h3>Reports</h3>
+                <p>Admin reporting and export tools.</p>
+
+                <div class="stack-buttons">
+                    <button class="gradient-btn" type="button" id="openAdminBtn">Open Admin</button>
+                    <button class="blue-btn" type="button" id="openReportsSummaryBtn">Reports Summary</button>
+                    <button class="success-wide-btn" type="button" id="exportGuestsCsvBtn">Export Guests CSV</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-head">
+                <h3>Recent Guest Check-ins</h3>
+                <p>Latest guest arrivals only.</p>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Guest Name</th>
+                            <th>Invitation Code</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recentCheckinsBody">
+                        <tr>
+                            <td colspan="4" class="muted-cell">No guest check-ins yet.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

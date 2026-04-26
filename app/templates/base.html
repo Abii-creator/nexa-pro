@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title or "Nexa Event Pro" }}</title>
+
+    <!-- Prevent caching -->
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0, private">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+
+    {% block body %}{% endblock %}
+
+    <!-- Session guard (Flask session-based, not JWT) -->
+    {% if protected_page %}
+    <script src="{{ url_for('static', filename='js/session.js') }}"></script>
+    {% endif %}
+
+</body>
+</html>

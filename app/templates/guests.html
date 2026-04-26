@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="app-shell">
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="brand">Nexa Event Pro</div>
+
+            <nav class="nav-left">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/guests" id="guestsNavLink" class="hidden-link">Guests</a>
+                <a href="/checkin" id="checkinNavLink" class="hidden-link">Check-in</a>
+                <a href="/users" id="usersNavLink" class="hidden-link">Users</a>
+                <a href="/admin" id="adminNavLink" class="hidden-link">Admin</a>
+            </nav>
+        </div>
+
+        <div class="nav-right">
+            <span class="user-chip" id="userChip">Loading...</span>
+            <a href="#" id="logoutBtn">Logout</a>
+        </div>
+    </header>
+
+    <main class="page-wrap page-wrap-wide">
+        <section class="panel">
+            <div class="panel-head">
+                <h2>Guest Management</h2>
+                <p>Add, update, delete, import CSV and generate guest QR codes.</p>
+            </div>
+
+            <form id="guestForm" class="guest-form-grid">
+                <input type="hidden" id="guestId">
+
+                <div>
+                    <label class="form-label">Full Name</label>
+                    <input class="text-input" type="text" id="fullName" required>
+                </div>
+
+                <div>
+                    <label class="form-label">Phone</label>
+                    <input class="text-input" type="text" id="phone">
+                </div>
+
+                <div>
+                    <label class="form-label">Email</label>
+                    <input class="text-input" type="email" id="email">
+                </div>
+
+                <div>
+                    <label class="form-label">Organization</label>
+                    <input class="text-input" type="text" id="organization">
+                </div>
+
+                <div>
+                    <label class="form-label">Title / Category</label>
+                    <input class="text-input" type="text" id="title">
+                </div>
+
+                <div class="guest-form-actions">
+                    <button type="submit" class="blue-btn">Save Guest</button>
+                    <button type="button" id="clearBtn" class="outline-btn">Clear</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel">
+            <div class="panel-head">
+                <h3>Bulk Import Guests</h3>
+                <p>Upload CSV with columns: full_name, phone, email, organization, title.</p>
+            </div>
+
+            <div class="guest-form-grid">
+                <div>
+                    <label class="form-label">CSV File</label>
+                    <input class="text-input" type="file" id="bulkCsvInput" accept=".csv">
+                </div>
+
+                <div class="guest-form-actions">
+                    <button type="button" class="success-wide-btn" id="bulkImportBtn">Import CSV</button>
+                </div>
+            </div>
+
+            <p id="bulkImportMessage" class="profile-message"></p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-head">
+                <h3>Guest List</h3>
+                <p>Search by name, phone, email, code or status.</p>
+            </div>
+
+            <div class="guest-toolbar">
+                <input class="search-input" type="text" id="searchInput" placeholder="Search by name, phone, email, code or status">
+                <button class="secondary-btn" id="refreshBtn" type="button">Refresh</button>
+                <button class="success-wide-btn" id="printBadgesBtn" type="button">Print QR Badges</button>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Code</th>
+                            <th>Status</th>
+                            <th>Check-in Time</th>
+                            <th>QR</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="guestsTableBody">
+                        <tr>
+                            <td colspan="8" class="muted-cell">Loading guests...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/guests.js') }}"></script>
+{% endblock %}

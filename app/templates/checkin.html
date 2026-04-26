@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="app-shell">
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="brand">Nexa Event Pro</div>
+
+            <nav class="nav-left">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/guests" id="guestsNavLink" class="hidden-link">Guests</a>
+                <a href="/checkin" id="checkinNavLink" class="hidden-link">Check-in</a>
+                <a href="/users" id="usersNavLink" class="hidden-link">Users</a>
+                <a href="/admin" id="adminNavLink" class="hidden-link">Admin</a>
+            </nav>
+        </div>
+
+        <div class="nav-right">
+            <span class="user-chip" id="userChip">Loading...</span>
+            <a href="#" id="logoutBtn">Logout</a>
+        </div>
+    </header>
+
+    <main class="page-wrap page-wrap-wide">
+        <section class="panel">
+            <div class="panel-head">
+                <h2>Guest Check-in</h2>
+                <p>Search by code number, full name, phone, email, scan QR by camera, or upload QR image.</p>
+            </div>
+
+            <div class="checkin-search-row">
+                <input
+                    class="search-input"
+                    type="text"
+                    id="checkinSearchInput"
+                    placeholder="Type code, full name, phone or email..."
+                >
+                <button class="blue-btn" id="checkinSearchBtn" type="button">Search</button>
+            </div>
+
+            <p id="checkinLockMessage" class="profile-message"></p>
+        </section>
+
+        <section class="panel">
+            <div class="panel-head">
+                <h3>QR Code Scanner</h3>
+                <p>Use camera scan or upload QR image from phone/gallery/email/WhatsApp.</p>
+            </div>
+
+            <div class="button-row">
+                <button class="secondary-btn" id="startQrScanBtn" type="button">Start QR Scan</button>
+                <button class="outline-btn" id="stopQrScanBtn" type="button">Stop QR Scan</button>
+            </div>
+
+            <div class="button-row" style="margin-top: 12px;">
+                <input
+                    class="text-input"
+                    type="file"
+                    id="qrImageInput"
+                    accept="image/*"
+                >
+                <button class="blue-btn" id="uploadQrImageBtn" type="button">Scan Uploaded QR Image</button>
+            </div>
+
+            <p id="scanResult" class="profile-message"></p>
+
+            <div style="margin-top: 16px;">
+                <div id="reader" style="width: 100%; max-width: 420px;"></div>
+            </div>
+        </section>
+
+        <section class="panel">
+            <div class="panel-head">
+                <h3>Search Results</h3>
+                <p>Manual search and scan results appear here.</p>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Guest Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Invitation Code</th>
+                            <th>Status</th>
+                            <th>Check-in Time</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="checkinResultsBody">
+                        <tr>
+                            <td colspan="7" class="muted-cell">Search guest to begin check-in.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script src="{{ url_for('static', filename='js/checkin.js') }}"></script>
+{% endblock %}

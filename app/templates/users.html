@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="app-shell">
+    <header class="topbar">
+        <div class="topbar-left">
+            <div class="brand">Nexa Event Pro</div>
+
+            <nav class="nav-left">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/guests" id="guestsNavLink" class="hidden-link">Guests</a>
+                <a href="/checkin" id="checkinNavLink" class="hidden-link">Check-in</a>
+                <a href="/users" id="usersNavLink" class="hidden-link">Users</a>
+                <a href="/admin" id="adminNavLink" class="hidden-link">Admin</a>
+            </nav>
+        </div>
+
+        <div class="nav-right">
+            <span class="user-chip" id="userChip">Loading...</span>
+            <a href="#" id="logoutBtn">Logout</a>
+        </div>
+    </header>
+
+    <main class="page-wrap page-wrap-wide">
+        <section class="panel">
+            <div class="panel-head">
+                <h2>User Management</h2>
+                <p>Create users and assign operational permissions.</p>
+            </div>
+
+            <form id="userForm" class="guest-form-grid">
+                <input type="hidden" id="userId">
+
+                <div>
+                    <label class="form-label" for="userFullName">Full Name</label>
+                    <input class="text-input" type="text" id="userFullName" required>
+                </div>
+
+                <div>
+                    <label class="form-label" for="userUsername">Username</label>
+                    <input class="text-input" type="text" id="userUsername" required>
+                </div>
+
+                <div>
+                    <label class="form-label" for="userEmail">Email</label>
+                    <input class="text-input" type="email" id="userEmail" required>
+                </div>
+
+                <div>
+                    <label class="form-label" for="userPassword">Password</label>
+                    <div class="password-field-wrap">
+                        <input class="text-input" type="password" id="userPassword">
+                        <button type="button" class="password-inside-btn toggle-password-btn" data-target="userPassword" aria-label="Show password">👁</button>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label" for="userRole">Role</label>
+                    <select class="text-input" id="userRole">
+                        <option value="User">User</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="form-label" for="userIsActive">Status</label>
+                    <select class="text-input" id="userIsActive">
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
+
+                <div class="permissions-box">
+                    <label class="form-label">Assigned Duties</label>
+
+                    <label class="perm-item">
+                        <input type="checkbox" id="permCheckin">
+                        Check-in Access
+                    </label>
+
+                    <label class="perm-item">
+                        <input type="checkbox" id="permAccessAdmin">
+                        Access Admin Page
+                    </label>
+
+                    <label class="perm-item">
+                        <input type="checkbox" id="permViewReports">
+                        View Reports
+                    </label>
+                </div>
+
+                <div class="guest-form-actions">
+                    <button type="submit" class="blue-btn">Save User</button>
+                    <button type="button" id="clearUserBtn" class="outline-btn">Clear</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="panel">
+            <div class="panel-head">
+                <h3>User List</h3>
+                <p>Admin-only user administration.</p>
+            </div>
+
+            <div class="guest-toolbar">
+                <input class="search-input" type="text" id="userSearchInput" placeholder="Search by name, username, email or role">
+                <button class="secondary-btn" id="refreshUsersBtn" type="button">Refresh</button>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Full Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Status</th>
+                            <th>Duties</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr>
+                            <td colspan="7" class="muted-cell">Loading users...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+
+<script src="{{ url_for('static', filename='js/users.js') }}"></script>
+{% endblock %}
