@@ -5,9 +5,15 @@ from dotenv import load_dotenv
 load_dotenv()
 
 WHATSAPP_TOKEN = os.getenv("WHATSAPP_TOKEN")
-WHATSAPP_PHONE_NUMBER_ID = os.getenv("WHATSAPP_PHONE_NUMBER_ID")
 
-GRAPH_API_VERSION = "v25.0"
+# Inakubali majina yote mawili:
+# Local au Render unaweza kutumia PHONE_NUMBER_ID au WHATSAPP_PHONE_NUMBER_ID
+WHATSAPP_PHONE_NUMBER_ID = (
+    os.getenv("WHATSAPP_PHONE_NUMBER_ID")
+    or os.getenv("PHONE_NUMBER_ID")
+)
+
+GRAPH_API_VERSION = os.getenv("GRAPH_API_VERSION", "v25.0")
 
 
 def clean_phone(phone: str) -> str:
@@ -33,10 +39,10 @@ def clean_phone(phone: str) -> str:
 
 def check_config():
     if not WHATSAPP_TOKEN:
-        return False, "WHATSAPP_TOKEN haijawekwa kwenye .env"
+        return False, "WHATSAPP_TOKEN haijawekwa kwenye .env au Render Environment"
 
     if not WHATSAPP_PHONE_NUMBER_ID:
-        return False, "WHATSAPP_PHONE_NUMBER_ID haijawekwa kwenye .env"
+        return False, "PHONE_NUMBER_ID au WHATSAPP_PHONE_NUMBER_ID haijawekwa"
 
     return True, None
 
@@ -63,7 +69,7 @@ def post_json(payload: dict) -> dict:
 
     headers = {
         "Authorization": f"Bearer {WHATSAPP_TOKEN}",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
     }
 
     try:
@@ -75,7 +81,7 @@ def post_json(payload: dict) -> dict:
             get_messages_url(),
             headers=headers,
             json=payload,
-            timeout=30
+            timeout=30,
         )
 
         response_data = safe_json(response)
@@ -86,7 +92,7 @@ def post_json(payload: dict) -> dict:
         return {
             "success": response.status_code in [200, 201],
             "status_code": response.status_code,
-            "response": response_data
+            "response": response_data,
         }
 
     except requests.exceptions.RequestException as e:
@@ -107,8 +113,8 @@ def send_whatsapp_text(to_phone: str, message: str) -> dict:
         "type": "text",
         "text": {
             "preview_url": False,
-            "body": message
-        }
+            "body": message,
+        },
     }
 
     return post_json(payload)
@@ -122,16 +128,16 @@ def upload_whatsapp_media(file_path: str, filename: str = "qr_code.png") -> dict
     if not file_path or not os.path.exists(file_path):
         return {
             "success": False,
-            "error": f"QR file haijapatikana: {file_path}"
+            "error": f"QR file haijapatikana: {file_path}",
         }
 
     headers = {
-        "Authorization": f"Bearer {WHATSAPP_TOKEN}"
+        "Authorization": f"Bearer {WHATSAPP_TOKEN}",
     }
 
     data = {
         "messaging_product": "whatsapp",
-        "type": "image/png"
+        "type": "image/png",
     }
 
     try:
@@ -140,7 +146,7 @@ def upload_whatsapp_media(file_path: str, filename: str = "qr_code.png") -> dict
 
         with open(file_path, "rb") as file:
             files = {
-                "file": (filename, file, "image/png")
+                "file": (filename, file, "image/png"),
             }
 
             response = requests.post(
@@ -148,7 +154,7 @@ def upload_whatsapp_media(file_path: str, filename: str = "qr_code.png") -> dict
                 headers=headers,
                 data=data,
                 files=files,
-                timeout=30
+                timeout=30,
             )
 
         response_data = safe_json(response)
@@ -160,7 +166,7 @@ def upload_whatsapp_media(file_path: str, filename: str = "qr_code.png") -> dict
             "success": response.status_code in [200, 201],
             "status_code": response.status_code,
             "response": response_data,
-            "media_id": response_data.get("id")
+            "media_id": response_data.get("id"),
         }
 
     except requests.exceptions.RequestException as e:
@@ -172,7 +178,7 @@ def send_whatsapp_document_by_media_id(
     to_phone: str,
     media_id: str,
     filename: str,
-    caption: str = ""
+    caption: str = "",
 ) -> dict:
     to_phone = clean_phone(to_phone)
 
@@ -190,14 +196,19 @@ def send_whatsapp_document_by_media_id(
         "document": {
             "id": media_id,
             "filename": filename,
-            "caption": caption
-        }
+            "caption": caption,
+        },
     }
 
     return post_json(payload)
 
 
-def send_whatsapp_qr(to_phone: str, image_path: str, guest_name: str, guest_code: str) -> dict:
+def send_whatsapp_qr(
+    to_phone: str,
+    image_path: str,
+    guest_name: str,
+    guest_code: str,
+) -> dict:
     to_phone = clean_phone(to_phone)
 
     print("========== WHATSAPP QR SEND START ==========")
@@ -209,6 +220,12 @@ def send_whatsapp_qr(to_phone: str, image_path: str, guest_name: str, guest_code
 
     if not to_phone:
         return {"success": False, "error": "Namba ya mpokeaji haipo"}
+
+    if not image_path or not os.path.exists(image_path):
+        return {
+            "success": False,
+            "error": f"QR file haijapatikana: {image_path}",
+        }
 
     filename = f"{guest_code or 'guest'}_qr_code.png"
 
@@ -222,7 +239,7 @@ def send_whatsapp_qr(to_phone: str, image_path: str, guest_name: str, guest_code
 
     upload_result = upload_whatsapp_media(
         file_path=image_path,
-        filename=filename
+        filename=filename,
     )
 
     if not upload_result.get("success"):
@@ -230,7 +247,7 @@ def send_whatsapp_qr(to_phone: str, image_path: str, guest_name: str, guest_code
             "success": False,
             "stage": "upload_media",
             "to_phone": to_phone,
-            "upload_result": upload_result
+            "upload_result": upload_result,
         }
 
         print("WHATSAPP FINAL RESULT:", result)
@@ -243,7 +260,7 @@ def send_whatsapp_qr(to_phone: str, image_path: str, guest_name: str, guest_code
         to_phone=to_phone,
         media_id=media_id,
         filename=filename,
-        caption=caption
+        caption=caption,
     )
 
     result = {
@@ -252,7 +269,7 @@ def send_whatsapp_qr(to_phone: str, image_path: str, guest_name: str, guest_code
         "to_phone": to_phone,
         "media_id": media_id,
         "upload_result": upload_result,
-        "document_result": document_result
+        "document_result": document_result,
     }
 
     print("WHATSAPP FINAL RESULT:", result)
